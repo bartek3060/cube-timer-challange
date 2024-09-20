@@ -1,14 +1,13 @@
 {
   "expo": {
-    "name": "cube-timer-challange",
+    "name": "Cube Challange",
     "slug": "cube-timer-challange",
+    "icon": "./assets/app-icon.png",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,20 +16,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
+      },
+      "package": "com.bartek3060.cubetimerchallange"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d0489fb6-7cc5-4852-b34c-c6837335ea8e"
       }
-    },
-    "web": {
-      "bundler": "metro",
-      "output": "static",
-      "favicon": "./assets/images/favicon.png"
-    },
-    "plugins": [
-      "expo-router"
-    ],
-    "experiments": {
-      "typedRoutes": true
     }
   }
 }
