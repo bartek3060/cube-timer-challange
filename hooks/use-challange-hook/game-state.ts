@@ -1,19 +1,19 @@
+import { CubeType } from "@/enums/cube-time.enum";
 import { Player } from "../../models/player.interface";
-
-const Scrambo = require("scrambo");
-const scrambleGenerator = new Scrambo();
+import { generateScramble } from "@/utils/generate-scramble";
 
 export interface GameState {
   game: {
     scrumble: string;
+    selectedCube: CubeType;
     gameStatus: "OFF" | "ON";
     players: Player[];
   };
 }
-
 export const initialState: GameState = {
   game: {
-    scrumble: scrambleGenerator.get(),
+    scrumble: generateScramble(CubeType.threeXThree),
+    selectedCube: CubeType.threeXThree,
     gameStatus: "OFF",
     players: [
       {
