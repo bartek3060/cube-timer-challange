@@ -1,3 +1,4 @@
+import { CubeType } from "@/enums/cube-time.enum";
 import { GameEvents } from "../../enums/game-events.enum";
 
 export type GameAction =
@@ -10,4 +11,5 @@ export type GameAction =
       playerName: string;
       isRealeased: boolean;
     }
-  | { type: GameEvents.GameCompleted };
+  | { type: GameEvents.GameCompleted }
+  | { type: GameEvents.CubeChanged; cubeType: CubeType };

@@ -4,60 +4,61 @@ import { StyleSheet, Text, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import { ResultsWidget } from "../results-widget/results-widget";
 import { formatTimestamp } from "../../utils/get-mapped-date";
+import { CubeType } from "@/enums/cube-time.enum";
+import { PressState } from "@/enums/press-state.enum";
+import { textButtonColorByState } from "./time-button-color-by-state";
 
 interface Props {
-  rotated?: boolean;
   solveMappedTime: number;
   playerName: string;
   playerWins: number;
   scrumble: string;
+  selectedCube: CubeType;
+  rotated?: boolean;
   screenPressed: () => void;
-  handleLongPress: () => void;
-  handlePressOut: () => void;
-}
-
-enum PressState {
-  NOT_PRESSED = 0,
-  PRESSED = 1,
-  LONG_PRESSED = 2,
+  screenLongPressed: () => void;
+  screenReleased: () => void;
 }
 
 export const PlayerScreen: FC<Props> = ({
-  rotated = false,
-  scrumble,
   solveMappedTime,
   playerName,
   playerWins,
+  scrumble,
+  selectedCube,
+  rotated = false,
   screenPressed,
-  handleLongPress,
-  handlePressOut,
+  screenLongPressed,
+  screenReleased,
 }) => {
-  const [pressState, setPressState] = useState(PressState.NOT_PRESSED);
+  const [buttonPressState, setButtonPressState] = useState(
+    PressState.NOT_PRESSED
+  );
 
   const playerLongPressGestures = Gesture.LongPress()
     .onBegin(() => {
-      setPressState(PressState.PRESSED);
+      setButtonPressState(PressState.PRESSED);
       screenPressed();
     })
     .maxDistance(1000)
     .onStart(() => {
-      setPressState(PressState.LONG_PRESSED);
-      handleLongPress();
+      setButtonPressState(PressState.LONG_PRESSED);
+      screenLongPressed();
     })
     .onEnd(() => {
-      setPressState(PressState.NOT_PRESSED);
-      handlePressOut();
+      setButtonPressState(PressState.NOT_PRESSED);
+      screenReleased();
     })
     .runOnJS(true);
 
   const playerPressGestures = Gesture.Tap()
     .onStart(() => {
-      setPressState(PressState.PRESSED);
+      setButtonPressState(PressState.PRESSED);
       screenPressed();
     })
     .onEnd(() => {
-      setPressState(PressState.NOT_PRESSED);
-      handlePressOut();
+      setButtonPressState(PressState.NOT_PRESSED);
+      screenReleased();
     })
     .runOnJS(true);
 
@@ -65,17 +66,6 @@ export const PlayerScreen: FC<Props> = ({
     playerLongPressGestures,
     playerPressGestures
   );
-
-  const textColor = () => {
-    switch (pressState) {
-      case PressState.NOT_PRESSED:
-        return "white";
-      case PressState.PRESSED:
-        return "yellow";
-      case PressState.LONG_PRESSED:
-        return "green";
-    }
-  };
 
   return (
     <View
@@ -90,9 +80,16 @@ export const PlayerScreen: FC<Props> = ({
             playerName={playerName}
             playerWins={playerWins}
             scrumble={scrumble}
+            selectedCube={selectedCube}
           />
           <View style={styles.timeContainer}>
-            <Text style={[styles.text, styles.time, { color: textColor() }]}>
+            <Text
+              style={[
+                styles.text,
+                styles.time,
+                { color: textButtonColorByState(buttonPressState) },
+              ]}
+            >
               {formatTimestamp(solveMappedTime)}
             </Text>
           </View>
@@ -121,10 +118,6 @@ const styles = StyleSheet.create({
   resultsInfo: {
     fontSize: 20,
   },
-  scrumble: {
-    fontSize: 24,
-  },
-
   timeContainer: {
     flex: 1,
     display: "flex",

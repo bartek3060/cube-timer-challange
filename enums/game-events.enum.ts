@@ -5,4 +5,5 @@ export enum GameEvents {
   ButtonReleased = "ButtonReleased",
   SolveCompleted = "SolveCompleted",
   GameCompleted = "GameCompleted",
+  CubeChanged = "CubeChanged",
 }
