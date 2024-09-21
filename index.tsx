@@ -15,6 +15,7 @@ const AppComponent = gestureHandlerRootHOC(() => {
     setPlayerIsReady,
     finishSolve,
     changeSelectedCube,
+    restartSession,
     selectedCube,
     isGameInProgress,
     scrumble,
@@ -47,7 +48,12 @@ const AppComponent = gestureHandlerRootHOC(() => {
       <MenuProvider>
         <View style={{ flex: 1 }}>
           <StatusBar barStyle="light-content" />
-          {!isGameInProgress && <Toolbar cubeChanged={onSelectedCubeChanged} />}
+          {!isGameInProgress && (
+            <Toolbar
+              cubeChanged={onSelectedCubeChanged}
+              restartSession={restartSession}
+            />
+          )}
           <PlayerScreen
             rotated={true}
             scrumble={scrumble}

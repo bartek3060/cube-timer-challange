@@ -22,6 +22,7 @@ export const initialState: GameState = {
         time: 0,
         isReady: false,
         buttonIsRealeased: true,
+        isSolved: false,
       },
       {
         name: "Player 2",
@@ -29,6 +30,7 @@ export const initialState: GameState = {
         time: 0,
         isReady: false,
         buttonIsRealeased: true,
+        isSolved: false,
       },
     ],
   },

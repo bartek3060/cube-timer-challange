@@ -1,4 +1,4 @@
-import { FontAwesome } from "@expo/vector-icons";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { Modal, Pressable, Text, View, StyleSheet } from "react-native";
 import { CubeType } from "@/enums/cube-time.enum";
 import { FC, useState } from "react";
@@ -77,11 +77,27 @@ export const CubeSelector: FC<Props> = ({ cubeChanged }) => {
                   width: "100%",
                   padding: 20,
                   display: "flex",
+                  flexDirection: "row",
                   alignItems: "center",
                   justifyContent: "center",
                 }}
               >
-                <Text style={styles.textStyle}>Select Cube</Text>
+                <View
+                  style={{
+                    width: "50%",
+                    marginLeft: "auto",
+                    flex: 1,
+                    transform: [{ translateX: 7 }],
+                  }}
+                >
+                  <Text style={styles.textStyle}>Select Cube</Text>
+                </View>
+                <Ionicons
+                  name="close"
+                  size={24}
+                  color="white"
+                  style={{ alignSelf: "flex-end" }}
+                />
               </View>
             </Pressable>
 

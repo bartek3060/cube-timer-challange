@@ -5,16 +5,18 @@ import { StyleSheet, View, Text } from "react-native";
 import { CubeSelector } from "./cube-selector/cube-selector";
 import { CubeType } from "@/enums/cube-time.enum";
 import { FC } from "react";
+import { OptionsMenu } from "./options-menu/options-menu";
 
 interface Props {
   cubeChanged: (cubeType: CubeType) => void;
+  restartSession: () => void;
 }
 
-export const Toolbar: FC<Props> = ({ cubeChanged }) => {
+export const Toolbar: FC<Props> = ({ cubeChanged, restartSession }) => {
   return (
     <View style={styles.mainContainer}>
       <View style={styles.iconsContainer}>
-        <Entypo name="dots-three-vertical" size={36} color="white" />
+        <OptionsMenu restartSession={restartSession} />
         <CubeSelector cubeChanged={cubeChanged} />
       </View>
     </View>

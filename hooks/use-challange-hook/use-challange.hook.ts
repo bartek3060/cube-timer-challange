@@ -3,6 +3,7 @@ import { GameEvents } from "../../enums/game-events.enum";
 import { reducer } from "./game-events-reducer";
 import { initialState } from "./game-state";
 import { CubeType } from "@/enums/cube-time.enum";
+import { Player } from "@/models/player.interface";
 
 export function useChallenge() {
   const [
@@ -13,8 +14,9 @@ export function useChallenge() {
   ] = useReducer(reducer, initialState);
 
   let startGameOnNextRelease = useRef(false);
-  let firstPlayerTimerRef = useRef<NodeJS.Timeout>();
-  let secondPlayerTimerRef = useRef<NodeJS.Timeout>();
+  let timerRef = useRef<NodeJS.Timeout>();
+  let solveCompleted1 = useRef(false);
+  let solveCompleted2 = useRef(false);
   let startTime = useRef<number>();
 
   useEffect(() => {
@@ -36,40 +38,46 @@ export function useChallenge() {
   useEffect(() => {
     if (
       gameStatus === "ON" &&
-      !firstPlayerTimerRef.current &&
-      !secondPlayerTimerRef.current &&
+      !timerRef.current &&
       startGameOnNextRelease.current
     ) {
-      console.log("start game");
       startTime.current = Date.now();
-      firstPlayerTimerRef.current = setInterval(() => {
+      solveCompleted1.current = false;
+      solveCompleted2.current = false;
+      timerRef.current = setInterval(() => {
+        const playersToUpdate: { playerName: string; time: number }[] = [];
+        const timeToUpdate = Date.now() - startTime.current!;
+        if (!solveCompleted1.current) {
+          playersToUpdate.push({
+            playerName: players[0].name,
+            time: timeToUpdate,
+          });
+        }
+        if (!solveCompleted2.current) {
+          playersToUpdate.push({
+            playerName: players[1].name,
+            time: timeToUpdate,
+          });
+        }
         dispatch({
           type: GameEvents.UpdateTimeEvent,
-          playerName: players[0].name,
-          time: Date.now() - startTime.current!,
+          players: playersToUpdate,
         });
-      }, 75);
-
-      secondPlayerTimerRef.current = setInterval(() => {
-        dispatch({
-          type: GameEvents.UpdateTimeEvent,
-          playerName: players[1].name,
-          time: Date.now() - startTime.current!,
-        });
-      }, 75);
+      }, 10);
       setTimeout(() => (startGameOnNextRelease.current = false), 0);
     }
+    () => {
+      clearInterval(timerRef.current);
+    };
   }, [gameStatus, players]);
 
   useEffect(() => {
-    if (
-      !firstPlayerTimerRef.current &&
-      !secondPlayerTimerRef.current &&
-      gameStatus === "ON"
-    ) {
+    if (players.every(({ isSolved }) => isSolved) && gameStatus === "ON") {
       dispatch({ type: GameEvents.GameCompleted });
+      clearInterval(timerRef.current);
+      timerRef.current = undefined;
     }
-  }, [gameStatus, firstPlayerTimerRef, secondPlayerTimerRef]);
+  }, [gameStatus, players]);
 
   const setPlayerIsReady = (playerName: string, isReady: boolean) => {
     dispatch({ type: GameEvents.PlayerReadyChange, playerName, isReady });
@@ -77,22 +85,15 @@ export function useChallenge() {
 
   const finishSolve = (playerName: string) => {
     if (playerName === players[0].name) {
-      clearInterval(firstPlayerTimerRef.current);
-      firstPlayerTimerRef.current = undefined;
+      solveCompleted1.current = true;
     } else {
-      clearInterval(secondPlayerTimerRef.current);
-      secondPlayerTimerRef.current = undefined;
+      solveCompleted2.current = true;
     }
 
     dispatch({
       type: GameEvents.SolveCompleted,
       playerName,
-      time: Date.now() - startTime.current!,
     });
-
-    if (!firstPlayerTimerRef.current && !secondPlayerTimerRef.current) {
-      dispatch({ type: GameEvents.GameCompleted });
-    }
   };
 
   const getPlayerData = (playerName: string) => {
@@ -107,12 +108,17 @@ export function useChallenge() {
     dispatch({ type: GameEvents.CubeChanged, cubeType: cube });
   };
 
+  const restartSession = () => {
+    dispatch({ type: GameEvents.SessionResest });
+  };
+
   return {
     setPlayerIsReady,
     setReleaseButton,
     finishSolve,
     getPlayerData,
     changeSelectedCube,
+    restartSession,
     selectedCube,
     shouldResetChallenge: players.every(({ time }) => !time),
     scrumble,
