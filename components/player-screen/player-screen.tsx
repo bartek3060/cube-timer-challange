@@ -2,7 +2,7 @@ import React, { FC, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import { ResultsWidget } from "../results-widget/results-widget";
+import { ResultsWidget } from "./results-widget/results-widget";
 import { formatTimestamp } from "../../utils/get-mapped-date";
 import { CubeType } from "@/enums/cube-time.enum";
 import { PressState } from "@/enums/press-state.enum";

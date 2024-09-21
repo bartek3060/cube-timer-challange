@@ -6,4 +6,5 @@ export enum GameEvents {
   SolveCompleted = "SolveCompleted",
   GameCompleted = "GameCompleted",
   CubeChanged = "CubeChanged",
+  SessionResest = "SessionResest",
 }

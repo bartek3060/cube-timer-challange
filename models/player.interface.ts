@@ -4,4 +4,5 @@ export interface Player {
   time: number;
   isReady: boolean;
   buttonIsRealeased: boolean;
+  isSolved: boolean;
 }
