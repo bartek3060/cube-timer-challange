@@ -3,15 +3,13 @@ import { Player } from "../../models/player.interface";
 import { generateScramble } from "@/utils/generate-scramble";
 
 export interface GameState {
-  game: {
     scrumble: string;
     selectedCube: CubeType;
     gameStatus: "OFF" | "ON";
     players: Player[];
-  };
 }
-export const initialState: GameState = {
-  game: {
+export const initialState: GameState =
+{
     scrumble: generateScramble(CubeType.threeXThree),
     selectedCube: CubeType.threeXThree,
     gameStatus: "OFF",
@@ -33,5 +31,4 @@ export const initialState: GameState = {
         isSolved: false,
       },
     ],
-  },
-};
+  };
