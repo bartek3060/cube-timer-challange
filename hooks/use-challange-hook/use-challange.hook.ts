@@ -1,5 +1,5 @@
 import { useEffect, useReducer, useRef } from "react";
-import { GameEvents } from "../../enums/game-events.enum";
+import { GameEventsNames } from "../../solves-machine/game-event-names.enum";
 import { reducer } from "./game-events-reducer";
 import { initialState } from "./game-state";
 import { CubeType } from "@/enums/cube-time.enum";
@@ -31,7 +31,7 @@ export function useChallenge() {
       gameStatus === "OFF" &&
       players.some(({ buttonIsRealeased }) => buttonIsRealeased)
     ) {
-      dispatch({ type: GameEvents.BeginGameEvent });
+      dispatch({ type: GameEventsNames.BeginGameEvent });
     }
   }, [startGameOnNextRelease, players, gameStatus, dispatch]);
 
@@ -60,27 +60,25 @@ export function useChallenge() {
           });
         }
         dispatch({
-          type: GameEvents.UpdateTimeEvent,
+          type: GameEventsNames.UpdateTimeEvent,
           players: playersToUpdate,
         });
       }, 10);
       setTimeout(() => (startGameOnNextRelease.current = false), 0);
     }
-    () => {
-      clearInterval(timerRef.current);
-    };
+    () => {clearInterval(timerRef.current);};
   }, [gameStatus, players]);
 
   useEffect(() => {
     if (players.every(({ isSolved }) => isSolved) && gameStatus === "ON") {
-      dispatch({ type: GameEvents.GameCompleted });
+      dispatch({ type: GameEventsNames.GameCompleted });
       clearInterval(timerRef.current);
       timerRef.current = undefined;
     }
   }, [gameStatus, players]);
 
   const setPlayerIsReady = (playerName: string, isReady: boolean) => {
-    dispatch({ type: GameEvents.PlayerReadyChange, playerName, isReady });
+    dispatch({ type: GameEventsNames.PlayerReadyChange, playerName, isReady });
   };
 
   const finishSolve = (playerName: string) => {
@@ -90,10 +88,7 @@ export function useChallenge() {
       solveCompleted2.current = true;
     }
 
-    dispatch({
-      type: GameEvents.SolveCompleted,
-      playerName,
-    });
+    dispatch({ type: GameEventsNames.SolveCompleted, playerName });
   };
 
   const getPlayerData = (playerName: string) => {
@@ -101,15 +96,15 @@ export function useChallenge() {
   };
 
   const setReleaseButton = (playerName: string, isRealeased: boolean) => {
-    dispatch({ type: GameEvents.ButtonReleased, playerName, isRealeased });
+    dispatch({ type: GameEventsNames.ButtonReleased, playerName, isRealeased });
   };
 
   const changeSelectedCube = (cube: CubeType) => {
-    dispatch({ type: GameEvents.CubeChanged, cubeType: cube });
+    dispatch({ type: GameEventsNames.CubeChanged, cubeType: cube });
   };
 
   const restartSession = () => {
-    dispatch({ type: GameEvents.SessionResest });
+    dispatch({ type: GameEventsNames.SessionReset });
   };
 
   return {

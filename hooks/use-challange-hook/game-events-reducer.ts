@@ -1,13 +1,14 @@
 import { generateScramble } from "@/utils/generate-scramble";
-import { GameEvents } from "../../enums/game-events.enum";
+import { GameEventsNames } from "../../solves-machine/game-event-names.enum";
 import { Player } from "../../models/player.interface";
 import { GameAction } from "./game-events.type";
-import { GameState, initialState } from "./game-state";
+import { initialState } from "./game-state";
+import {GameState} from "@/solves-machine/solves-machine";
 
-export const reducer = (state: GameState, action: GameAction): GameState => {
+export const reducer = (state: GameState, action: GameAction): GameState['game'] => {
   const playersState = state.game.players;
   switch (action.type) {
-    case GameEvents.PlayerReadyChange:
+    case GameEventsNames.PlayerReadyChange:
       return {
         ...state,
         game: {
@@ -19,7 +20,7 @@ export const reducer = (state: GameState, action: GameAction): GameState => {
           ),
         },
       };
-    case GameEvents.ButtonReleased:
+    case GameEventsNames.ButtonReleased:
       return {
         ...state,
         game: {
@@ -31,7 +32,7 @@ export const reducer = (state: GameState, action: GameAction): GameState => {
           ),
         },
       };
-    case GameEvents.BeginGameEvent:
+    case GameEventsNames.BeginGameEvent:
       return {
         ...state,
         game: {
@@ -43,7 +44,7 @@ export const reducer = (state: GameState, action: GameAction): GameState => {
           })),
         },
       };
-    case GameEvents.UpdateTimeEvent:
+    case GameEventsNames.UpdateTimeEvent:
       return {
         ...state,
         game: {
@@ -59,7 +60,7 @@ export const reducer = (state: GameState, action: GameAction): GameState => {
           }),
         },
       };
-    case GameEvents.SolveCompleted:
+    case GameEventsNames.SolveCompleted:
       return {
         ...state,
         game: {
@@ -71,7 +72,7 @@ export const reducer = (state: GameState, action: GameAction): GameState => {
           ),
         },
       };
-    case GameEvents.GameCompleted:
+    case GameEventsNames.GameCompleted:
       return {
         ...state,
         game: {
@@ -94,7 +95,7 @@ export const reducer = (state: GameState, action: GameAction): GameState => {
           }, []),
         },
       };
-    case GameEvents.CubeChanged:
+    case GameEventsNames.CubeChanged:
       return {
         ...state,
         game: {
@@ -103,8 +104,7 @@ export const reducer = (state: GameState, action: GameAction): GameState => {
           scrumble: generateScramble(action.cubeType),
         },
       };
-    case GameEvents.SessionResest:
-      console.log("reset");
+    case GameEventsNames.SessionReset:
       return {
         ...initialState,
         game: {
